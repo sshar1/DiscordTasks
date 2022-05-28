@@ -55,6 +55,10 @@ public final class MongoUtil {
         return null;
     }
 
+    private static void replaceDoc(Document oldDoc, Document newDoc) {
+        getTaskCollection().replaceOne(oldDoc.toBsonDocument(), newDoc);
+    }
+
     public static Document getTasksFromId(String id) {
 
         Document user = getDocFromId(id);
@@ -75,16 +79,20 @@ public final class MongoUtil {
 
     public static void removeTask(String id, String title) {
 
-        Document tasks = getTasksFromId(id);
+        Document user = getDocFromId(id);
 
-        tasks.remove(title);
+        ((Document) user.get("tasks")).remove(title);   
+
+        replaceDoc(getDocFromId(id), user);
     }
 
     public static void addTask(String id, String title, String task) {
 
-        Document tasks = getTasksFromId(id);
+        Document user = getDocFromId(id);
 
-        tasks.put(title, task);   
+        ((Document) user.get("tasks")).put(title, task);   
+
+        replaceDoc(getDocFromId(id), user);
     }
 
     public static void setColor(String id, String color) {
@@ -92,6 +100,8 @@ public final class MongoUtil {
         Document user = getDocFromId(id);
 
         user.replace("color", color.toUpperCase());
+
+        replaceDoc(getDocFromId(id), user);
     }
 
     public static String getColor(String id) {

@@ -8,8 +8,17 @@ public class Main {
     
     public static void main(String[] args) {
 
+        String token;
+
+        if (args.length < 1) {
+            System.out.println("please enter valid token");
+            return;
+        }
+
+        token = args[0];
+
         DiscordApi api = new DiscordApiBuilder()
-            .setToken("OTc2MjMzNzIyNDY4NzczOTA4.G1aWiO.HdpE5U6ERQpm8NWvAx7Y_eIzgQnYbtGGLR7dJY")
+            .setToken(token)
             .login().join();
 
         api.addMessageCreateListener(new DisplayTasksCommand());
